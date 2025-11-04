@@ -154,7 +154,7 @@
       const lessonFiles = import.meta.glob("./lessons/*/index.html");
       const thumbnailFiles = import.meta.glob(
         "./lessons/*/thumbnail.{png,jpg,jpeg,jpe,gif,webp,avif,svg}",
-        { eager: true, as: "url" }
+        { eager: true, query: "?url", import: "default" }
       );
 
       const grid = document.getElementById("lesson-grid");

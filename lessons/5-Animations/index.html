@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title></title>
+
+    <script>
+      const segments = window.location.pathname.split("/").filter(Boolean);
+      let folder = "";
+      if (segments.length) {
+        const last = segments[segments.length - 1];
+        folder = last.includes(".") ? segments[segments.length - 2] || "" : last;
+      }
+      if (folder) document.title = folder;
+    </script>
+  </head>
+  <body>
+    <canvas class="webgl"></canvas>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

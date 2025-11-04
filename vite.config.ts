@@ -23,6 +23,11 @@ function htmlInputs() {
 }
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      '~': resolve(__dirname, 'shared'),
+    },
+  },
   build: {
     rollupOptions: {
       input: htmlInputs(),
