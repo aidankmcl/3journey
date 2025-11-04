@@ -162,13 +162,12 @@
 
       const formatLabel = (segment) => {
         const unprefixed = segment.replace("lessons/", "");
+        const [chapter, ep, name] = unprefixed.split('-');
 
         if (/^\d+$/.test(unprefixed)) {
           return `Lesson ${unprefixed.padStart(2, "0")}`;
         }
-        return unprefixed
-          .replace(/[-_]/g, " ")
-          .replace(/\\b\\w/g, (match) => match.toUpperCase());
+        return `${chapter}.${ep} / ${name}`;
       };
 
       const lessonNames = [
