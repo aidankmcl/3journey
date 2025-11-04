@@ -22,7 +22,6 @@ window.addEventListener("mousemove", (evt) => {
   // Subtract 0.5 from normalized coords to create center-origin cartesian axes (Y pointing up to match 3js)
   cursor.x = evt.clientX / sizes.width - 0.5;
   cursor.y = -(evt.clientY / sizes.height - 0.5);
-  console.log(cursor);
 });
 
 
