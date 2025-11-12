@@ -2,6 +2,11 @@ precision mediump float;
 
 varying vec2 vUv;
 
+float random(vec2 st)
+{
+    return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123);
+}
+
 void main()
 {
     // float pattern = vUv.x;
@@ -53,8 +58,31 @@ void main()
     // // DNA
     // float pattern = abs(0.5 - abs(0.5 - vUv.x) / abs(0.5 - vUv.y));
 
-    // City Corner
-    float pattern = min(abs(0.5 - vUv.x), abs(0.5 - vUv.y));
+    // // City Corner
+    // float pattern = min(abs(0.5 - vUv.x), abs(0.5 - vUv.y));
+
+    // // Corridor
+    // float pattern = max(abs(0.5 - vUv.x), abs(0.5 - vUv.y));
+
+    // // 1-bit Corridor
+    // // float pattern = step(0.2, max(abs(0.5 - vUv.x), abs(0.5 - vUv.y)));
+    // // 1-bit Corridor, large blank
+    // // float pattern = step(0.4, max(abs(0.5 - vUv.x), abs(0.5 - vUv.y)));
+    // // 1-bit Corridor, adjustable inner and outer edges
+    // float pattern = 1.0 - step(0.4, max(abs(0.5 - vUv.x), abs(0.5 - vUv.y)));
+    // pattern -= 1.0 - step(0.3, max(abs(0.5 - vUv.x), abs(0.5 - vUv.y)));
+
+    // // Swatch, horizontal
+    // float pattern = floor(vUv.x * 10.0) / 10.0;
+
+    // // Swatch, diagonal
+    // float pattern = min(floor(vUv.x * 10.0) / 10.0, floor(vUv.y * 10.0) / 10.0);
+
+    // // Swatch, both axes
+    // float pattern = floor(vUv.x * 10.0) / 10.0 * floor(vUv.y * 10.0) / 10.0;
+
+    // Static
+    float pattern = random(vUv);
 
     gl_FragColor = vec4(vec3(pattern), 1.0);
 }
