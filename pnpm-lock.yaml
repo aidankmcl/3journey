@@ -20,9 +20,6 @@ importers:
       three:
         specifier: ^0.181.0
         version: 0.181.0
-      vite-plugin-glslify:
-        specifier: ^2.3.0
-        version: 2.3.0(rolldown-vite@7.1.14(@types/node@24.10.0))
     devDependencies:
       '@types/node':
         specifier: ^24.10.0
@@ -39,6 +36,9 @@ importers:
       vite:
         specifier: npm:rolldown-vite@7.1.14
         version: rolldown-vite@7.1.14(@types/node@24.10.0)
+      vite-plugin-glslify:
+        specifier: ^2.3.0
+        version: 2.3.0(rolldown-vite@7.1.14(@types/node@24.10.0))
 
 packages:
 
