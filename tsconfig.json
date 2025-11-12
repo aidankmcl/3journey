@@ -26,5 +26,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["lessons", "shared/objects"]
+  "include": ["lessons", "shared", "*.d.ts"]
 }

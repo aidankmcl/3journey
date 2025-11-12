@@ -1,7 +1,10 @@
 // vite.config.ts
-import { defineConfig } from 'vite';
 import { resolve } from 'path';
+
+import { defineConfig } from 'vite';
 import fg from 'fast-glob';
+import { glslify } from 'vite-plugin-glslify'
+
 
 const PARENT_DIR_NAME = 'lessons';
 
@@ -23,6 +26,10 @@ function htmlInputs() {
 }
 
 export default defineConfig({
+  assetsInclude: ['**/*.hdr'],
+  plugins: [
+    glslify() // Handle shader files
+  ],
   resolve: {
     alias: {
       '~': resolve(__dirname, 'shared'),

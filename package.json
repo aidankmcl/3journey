@@ -13,7 +13,8 @@
     "@types/three": "^0.181.0",
     "fast-glob": "^3.3.3",
     "typescript": "~5.9.3",
-    "vite": "npm:rolldown-vite@7.1.14"
+    "vite": "npm:rolldown-vite@7.1.14",
+    "vite-plugin-glslify": "^2.3.0"
   },
   "pnpm": {
     "overrides": {
@@ -22,6 +23,7 @@
   },
   "dependencies": {
     "gsap": "^3.13.0",
+    "lil-gui": "^0.21.0",
     "three": "^0.181.0"
   }
 }
