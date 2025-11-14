@@ -1,18 +1,18 @@
 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import GUI from 'lil-gui';
+// import GUI from 'lil-gui';
 
 import '~/styles/style.css';
 
-const gui = new GUI();
+// const gui = new GUI();
 
 const sizes = {
   width: window.innerWidth,
   height: window.innerHeight
 }
 
-const cursor = { x: 0, y: 0 };
+// const cursor = { x: 0, y: 0 };
 
 
 const canvas = document.querySelector('canvas.webgl');
@@ -26,6 +26,7 @@ const scene = new THREE.Scene();
 // Add test plane
 const geom = new THREE.PlaneGeometry(1, 1, 32, 32);
 
+let elapsedTime = 0.0;
 
 // Pattern 2
 import vertexShader from './shaders/pattern.vert';
@@ -33,7 +34,10 @@ import fragShader from './shaders/pattern.frag';
 const material = new THREE.RawShaderMaterial({
   vertexShader: vertexShader,
   fragmentShader: fragShader,
-  side: THREE.DoubleSide
+  side: THREE.DoubleSide,
+  uniforms: {
+    uElapsed: { value: elapsedTime }
+  }
 });
 
 const plane = new THREE.Mesh(
@@ -49,8 +53,8 @@ camera.lookAt(plane.position);
 scene.add(camera);
 
 
-const axesHelper = new THREE.AxesHelper(2);
-scene.add(axesHelper);
+// const axesHelper = new THREE.AxesHelper(2);
+// scene.add(axesHelper);
 
 
 const controls = new OrbitControls(camera, canvas as HTMLElement);
@@ -65,10 +69,11 @@ renderer.render(scene, camera); // Initial render
 
 
 // Animations
-// const clock = new THREE.Clock();
+const clock = new THREE.Clock();
 
 const tick = () => {
-  // const elapsedTime = clock.getElapsedTime();
+  elapsedTime = clock.getElapsedTime();
+  material.uniforms.uElapsed.value = elapsedTime;
 
   controls.update();
   

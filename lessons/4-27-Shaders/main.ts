@@ -12,7 +12,7 @@ const sizes = {
   height: window.innerHeight
 }
 
-const cursor = { x: 0, y: 0 };
+// const cursor = { x: 0, y: 0 };
 
 
 const canvas = document.querySelector('canvas.webgl');
