@@ -96,7 +96,7 @@ void main()
   // vertical += step(0.8, mod(10.0 * vUv.x, 1.0)) * step(mod(10.0 * vUv.y, 1.0), 0.2);
   // float pattern = horizontal + vertical;
 
-  // // // Pluses, proper
+  // // Pluses, proper
   // float horizontal = step(0.4, mod(10.0 * vUv.x, 1.0));
   // horizontal *= step(0.8, mod(10.0 * vUv.y + 0.2, 1.0));
   // float vertical = step(0.8, mod(10.0 * vUv.x + 0.2, 1.0));
@@ -174,7 +174,7 @@ void main()
   // // Ghostly circle parameterized
   // float pattern = distance(vUv, vec2(0.25, 0.75));
 
-  // // Dancing Stars
+  // !!! Dancing Stars
   vec2 dotLocation = vec2(0.5 + 0.25 * cos(uElapsed), 0.5 + 0.25 * sin(uElapsed));
   float pattern = 0.01 / distance(vUv, dotLocation);
   vec2 dot2Location = vec2(0.5 + 0.25 * cos(uElapsed + 2.0), 0.5 + 0.25 * sin(uElapsed + 6.0));
@@ -259,12 +259,14 @@ void main()
   // // Perlin, outline
   // vec2 shiftedUV = vec2(vUv.x, vUv.y + uElapsed * 0.1);
   // float pattern = sin(cnoise(shiftedUV * 30.0) * 10.0);
-  // Perlin, outline, stark
+  // // !!! Perlin, outline, stark
   // pattern = step(0.9, pattern);
 
-
+  // Set special colors
   vec3 blackColor = vec3(0.0);
   vec3 uvColor = vec3(vUv, 1.0);
-  vec3 mixedColor = mix(blackColor, uvColor, pattern);
-  gl_FragColor = vec4(mixedColor, 1.0);
+  vec3 mixedColor = mix(blackColor, uvColor, clamp(pattern, 0.0, 1.0)); // !!!
+  vec3 color = mixedColor;
+
+  gl_FragColor = vec4(color, 1.0);
 }

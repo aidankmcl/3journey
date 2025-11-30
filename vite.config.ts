@@ -26,7 +26,7 @@ function htmlInputs() {
 }
 
 export default defineConfig({
-  assetsInclude: ['**/*.hdr'],
+  assetsInclude: ['**/*.hdr', '**/*.glb'],
   plugins: [
     glslify() // Handle shader files
   ],
