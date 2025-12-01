@@ -11,6 +11,12 @@ importers:
 
   .:
     dependencies:
+      '@doodle3d/clipper-js':
+        specifier: ^1.0.11
+        version: 1.0.11
+      clipper2-wasm:
+        specifier: ^0.2.1
+        version: 0.2.1
       gsap:
         specifier: ^3.13.0
         version: 3.13.0
@@ -48,6 +54,12 @@ packages:
 
   '@dimforge/rapier3d-compat@0.12.0':
     resolution: {integrity: sha512-uekIGetywIgopfD97oDL5PfeezkFpNhwlzlaEYNOA0N6ghdsOvh/HYjSMek5Q2O1PYvRSDFcqFVJl4r4ZBwOow==}
+
+  '@doodle3d/clipper-js@1.0.11':
+    resolution: {integrity: sha512-KSVF9iOl9jGu02EGUnVS2ric4iQRSIypg3/CTM30+MuWsqkUhILIG2EPxvPASENi6483QmNIwGSogZuTE7CFQA==}
+
+  '@doodle3d/clipper-lib@6.4.2-b':
+    resolution: {integrity: sha512-glELSijsD9b+/0d9iOdasBwqH3s+xPxD59tJ7aXkBx7klugygGOMXn7PB05AdhVyA1OYMj7GUCegaQa7nvLtmQ==}
 
   '@emnapi/core@1.7.0':
     resolution: {integrity: sha512-pJdKGq/1iquWYtv1RRSljZklxHCOCAJFJrImO5ZLKPJVJlVUcs8yFwNQlqS0Lo8xT1VAXXTCZocF9n26FWEKsw==}
@@ -176,6 +188,9 @@ packages:
   '@tybys/wasm-util@0.10.1':
     resolution: {integrity: sha512-9tTaPJLSiejZKx+Bmog4uSubteqTvFrVrURwkmHixBo0G4seD0zUxp98E1DzUBJxLQ3NPwXrGKDiVjwx/DpPsg==}
 
+  '@types/emscripten@1.41.5':
+    resolution: {integrity: sha512-cMQm7pxu6BxtHyqJ7mQZ2kXWV5SLmugybFdHCBbJ5eHzOo6VhBckEgAT3//rP5FwPHNPeEiq4SmQ5ucBwsOo4Q==}
+
   '@types/node@24.10.0':
     resolution: {integrity: sha512-qzQZRBqkFsYyaSWXuEHc2WR9c0a0CXwiE5FWUvn7ZM+vdy1uZLfCunD38UzhuB7YN/J11ndbDBcTmOdxJo9Q7A==}
 
@@ -213,6 +228,9 @@ packages:
 
   buffer-from@1.1.2:
     resolution: {integrity: sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==}
+
+  clipper2-wasm@0.2.1:
+    resolution: {integrity: sha512-WXkKLsfLtB0952jVky77xgqCcNRa641aDZDtB0vmU6wiaUd45nb1aQpqz21JJMUg4uXkjAYPCOF3iH5lMfS9tw==}
 
   commander@2.20.3:
     resolution: {integrity: sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==}
@@ -680,6 +698,12 @@ snapshots:
 
   '@dimforge/rapier3d-compat@0.12.0': {}
 
+  '@doodle3d/clipper-js@1.0.11':
+    dependencies:
+      '@doodle3d/clipper-lib': 6.4.2-b
+
+  '@doodle3d/clipper-lib@6.4.2-b': {}
+
   '@emnapi/core@1.7.0':
     dependencies:
       '@emnapi/wasi-threads': 1.1.0
@@ -777,6 +801,8 @@ snapshots:
       tslib: 2.8.1
     optional: true
 
+  '@types/emscripten@1.41.5': {}
+
   '@types/node@24.10.0':
     dependencies:
       undici-types: 7.16.0
@@ -813,6 +839,10 @@ snapshots:
       fill-range: 7.1.1
 
   buffer-from@1.1.2: {}
+
+  clipper2-wasm@0.2.1:
+    dependencies:
+      '@types/emscripten': 1.41.5
 
   commander@2.20.3: {}
 

@@ -1,0 +1,1 @@
+Started working on system for generating a house based on a floor plan but ultimately the roof was going to be involved enough to no longer be very automatic. Ultimately abandoned in favor of moving forward in the course.
