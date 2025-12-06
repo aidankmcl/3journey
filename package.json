@@ -10,22 +10,36 @@
   },
   "devDependencies": {
     "@types/node": "^24.10.0",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
     "@types/three": "^0.181.0",
+    "@vitejs/plugin-react-swc": "^4.2.2",
     "fast-glob": "^3.3.3",
     "typescript": "~5.9.3",
     "vite": "npm:rolldown-vite@7.1.14",
+    "vite-plugin-full-reload": "^1.2.0",
+    "vite-plugin-glsl": "^1.5.5",
     "vite-plugin-glslify": "^2.3.0"
   },
   "pnpm": {
     "overrides": {
       "vite": "npm:rolldown-vite@7.1.14"
-    }
+    },
+    "onlyBuiltDependencies": [
+      "@swc/core"
+    ]
   },
   "dependencies": {
     "@doodle3d/clipper-js": "^1.0.11",
     "clipper2-wasm": "^0.2.1",
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.4.2",
+    "@react-three/postprocessing": "^3.0.4",
     "gsap": "^3.13.0",
     "lil-gui": "^0.21.0",
+    "postprocessing": "^6.38.0",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1",
     "three": "^0.181.0"
   }
 }

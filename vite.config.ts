@@ -2,8 +2,11 @@
 import { resolve } from 'path';
 
 import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react-swc';
 import fg from 'fast-glob';
-import { glslify } from 'vite-plugin-glslify'
+// import { glslify } from 'vite-plugin-glslify';
+import glsl from 'vite-plugin-glsl';
+import fullReload from 'vite-plugin-full-reload';
 
 
 const PARENT_DIR_NAME = 'lessons';
@@ -28,7 +31,9 @@ function htmlInputs() {
 export default defineConfig({
   assetsInclude: ['**/*.hdr', '**/*.glb'],
   plugins: [
-    glslify() // Handle shader files
+    react(),
+    glsl(),
+    fullReload(['**/includes/**/*.glsl'])
   ],
   resolve: {
     alias: {
