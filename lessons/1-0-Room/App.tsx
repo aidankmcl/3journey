@@ -48,11 +48,18 @@ function Scene() {
       />
     </group>
 
-    <LitMesh position={[0, 0, 0]} light={lightA}>
+    <ambientLight intensity={0.1} />
+
+    <mesh>
+      <boxGeometry args={[8, 3, 10]} />
+      <meshStandardMaterial side={THREE.BackSide} />
+    </mesh>
+
+    <LitMesh position={[-1, 0, -1]} light={lightA}>
       <sphereGeometry args={[0.8]} />
     </LitMesh>
 
-    <LitMesh position={[0, 0, 0]} light={lightB} ref={boxRef}>
+    <LitMesh position={[-1, 0, -1]} light={lightB} ref={boxRef}>
       <boxGeometry args={[1, 1, 1]} />
     </LitMesh>
   </>
