@@ -1,16 +1,46 @@
 
 import { useRef, useState } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, SpotLight } from '@react-three/drei'; // Import OrbitControls from Drei
+import { Canvas, useFrame, extend } from '@react-three/fiber';
+import { OrbitControls, shaderMaterial } from '@react-three/drei';
 import * as THREE from 'three';
 
-import { LitMesh } from '~/r3f/LitMesh';
+import { Cookie } from './Cookie';
+
+const VolumetricMaterial = shaderMaterial(
+  { color: new THREE.Color('white'), opacity: 1.0 },
+  `
+    varying vec2 vUv;
+    void main() {
+      vUv = uv;
+      gl_Position = projectionMatrix * modelViewMatrix * instanceMatrix * vec4(position, 1.0);
+    }
+  `,
+  `
+    varying vec2 vUv;
+    uniform vec3 color;
+    uniform float opacity;
+    void main() {
+      float fade = 1.0 - vUv.y;
+      fade = pow(fade, 2.0);
+      gl_FragColor = vec4(color, opacity * fade);
+    }
+  `
+)
+
+extend({ VolumetricMaterial })
+
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    volumetricMaterial: ThreeElements['shaderMaterial'] & {
+      color?: THREE.ColorRepresentation;
+      opacity?: number;
+    }
+  }
+}
 
 
 function Scene() {
-  const [lightTarget, setLightTarget] = useState<THREE.Group | undefined>();
-  const [lightA, setLightA] = useState<THREE.SpotLight | null>(null);
-  const [lightB, setLightB] = useState<THREE.SpotLight | null>(null);
+  const [lightTarget, setLightTarget] = useState<THREE.Group | null>(null);
 
   const boxRef = useRef<THREE.Mesh>(null);
 
@@ -22,46 +52,22 @@ function Scene() {
   });
 
   return <>
-    <group ref={setLightTarget} position={[0, 0, 0]}>
-      <SpotLight
-        ref={setLightA}
-        position={[0, 2, 0]}
-        target={lightTarget}
-        distance={10}
-        intensity={1}
-        angle={Math.PI / 4}
-        anglePower={10}
-        attenuation={3}
-        color="#ffffff"
-      />
+    <ambientLight intensity={0.25} />
 
-      <SpotLight
-        ref={setLightB}
-        position={[2, 0, 0]}
-        target={lightTarget}
-        distance={10}
-        intensity={1}
-        angle={Math.PI / 4}
-        anglePower={10}
-        attenuation={3}
-        color="#ffffff"
-      />
-    </group>
-
-    <ambientLight intensity={0.1} />
-
-    <mesh>
+    {/* Room */}
+    <Cookie position={[0, 0, 0]} side={THREE.BackSide}>
       <boxGeometry args={[8, 3, 10]} />
-      <meshStandardMaterial side={THREE.BackSide} />
-    </mesh>
+    </Cookie>
 
-    <LitMesh position={[-1, 0, -1]} light={lightA}>
-      <sphereGeometry args={[0.8]} />
-    </LitMesh>
 
-    <LitMesh position={[-1, 0, -1]} light={lightB} ref={boxRef}>
+    {/* Props */}
+    <Cookie position={[-2, 2, 0]}>
+      <sphereGeometry args={[1, 32, 32]} />
+    </Cookie>
+
+    <Cookie position={[-3, 0, 0]}>
       <boxGeometry args={[1, 1, 1]} />
-    </LitMesh>
+    </Cookie>
   </>
 }
 
