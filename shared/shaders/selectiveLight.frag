@@ -12,27 +12,27 @@ uniform float uLightAngle;
 
 void main()
 {
-    vec3 viewDirection = normalize(vPosition - cameraPosition);
-    vec3 normal = normalize(vNormal);
-    vec3 color = vec3(1.0);
+  vec3 viewDirection = normalize(vPosition - cameraPosition);
+  vec3 normal = normalize(vNormal);
+  vec3 color = vec3(1.0);
 
-    vec3 spot = spotLight(
-      uLightPos,      // vec3 lightPosition
-      uLightTarget,   // vec3 lightTarget
-      uLightAngle,    // float angle (radians)
-      1.0,            // float lightIntensity
-      vec3(1.0),      // vec3 lightColor
-      5.0,            // float falloffDist
-      20.0,           // float specularPower
-      normal,         // vec3 normal
-      viewDirection,  // vec3 viewDirection
-      vPosition       // vec3 position
-    );
+  vec3 spot = spotLight(
+    uLightPos,      // vec3 lightPosition
+    uLightTarget,   // vec3 lightTarget
+    uLightAngle,    // float angle (radians)
+    1.0,            // float lightIntensity
+    vec3(1.0),      // vec3 lightColor
+    5.0,            // float falloffDist
+    20.0,           // float specularPower
+    normal,         // vec3 normal
+    viewDirection,  // vec3 viewDirection
+    vPosition       // vec3 position
+  );
 
-    color *= spot;
+  color *= spot;
 
-    // Final color
-    gl_FragColor = vec4(color, length(spot));
-    #include <tonemapping_fragment>
-    #include <colorspace_fragment>
+  // Final color
+  gl_FragColor = vec4(color, length(spot));
+  #include <tonemapping_fragment>
+  #include <colorspace_fragment>
 }
