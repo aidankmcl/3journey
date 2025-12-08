@@ -46,3 +46,5 @@ export const Cookie = forwardRef<THREE.Mesh, CookieProps>(({ side = THREE.FrontS
     </mesh>
   );
 });
+
+export { VolumetricCookie } from './VolumetricCookie';

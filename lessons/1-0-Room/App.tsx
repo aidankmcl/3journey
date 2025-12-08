@@ -1,48 +1,14 @@
 
-import { useRef, useState } from 'react';
-import { Canvas, useFrame, extend } from '@react-three/fiber';
-import { OrbitControls, shaderMaterial } from '@react-three/drei';
+import { useState } from 'react';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 
-import { Cookie } from './Cookie';
-
-const VolumetricMaterial = shaderMaterial(
-  { color: new THREE.Color('white'), opacity: 1.0 },
-  `
-    varying vec2 vUv;
-    void main() {
-      vUv = uv;
-      gl_Position = projectionMatrix * modelViewMatrix * instanceMatrix * vec4(position, 1.0);
-    }
-  `,
-  `
-    varying vec2 vUv;
-    uniform vec3 color;
-    uniform float opacity;
-    void main() {
-      float fade = 1.0 - vUv.y;
-      fade = pow(fade, 2.0);
-      gl_FragColor = vec4(color, opacity * fade);
-    }
-  `
-)
-
-extend({ VolumetricMaterial })
-
-declare module '@react-three/fiber' {
-  interface ThreeElements {
-    volumetricMaterial: ThreeElements['shaderMaterial'] & {
-      color?: THREE.ColorRepresentation;
-      opacity?: number;
-    }
-  }
-}
+import { Cookie, VolumetricCookie } from './Cookie';
 
 
 function Scene() {
-  const [lightTarget, setLightTarget] = useState<THREE.Group | null>(null);
-
-  const boxRef = useRef<THREE.Mesh>(null);
+  const [lightTarget] = useState<THREE.Group | null>(null);
 
   useFrame(() => {
     if (lightTarget) {
@@ -54,10 +20,22 @@ function Scene() {
   return <>
     <ambientLight intensity={0.25} />
 
+    {/* Volumetric beams - instanced cones */}
+    <VolumetricCookie 
+      position={[0, 0, 0]} 
+      coneLength={5}
+      coneRadius={0.2}
+    />
+
     {/* Room */}
     <Cookie position={[0, 0, 0]} side={THREE.BackSide}>
       <boxGeometry args={[8, 3, 10]} />
     </Cookie>
+
+    <mesh>
+      <sphereGeometry args={[0.25, 16, 16]} />
+      <meshBasicMaterial color="black" />
+    </mesh>
 
 
     {/* Props */}
