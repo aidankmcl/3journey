@@ -1,21 +1,15 @@
 import { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
+import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
 import volumetricVert from './volumetricCones.vert';
 import volumetricFrag from './volumetricCones.frag';
-
-type Vec3Input = THREE.Vector3 | THREE.Vector3Tuple;
-
-function toVector3(input: Vec3Input): THREE.Vector3 {
-  return input instanceof THREE.Vector3 ? input : new THREE.Vector3(...input);
-}
+import { type DiscoUniforms } from './discoUniforms';
 
 type VolumetricCookieProps = {
-  lightPos?: Vec3Input;
+  discoUniforms?: DiscoUniforms;
   coneLength?: number;
   coneRadius?: number;
-  position?: THREE.Vector3Tuple;
-  groupRef?: React.RefObject<THREE.Group>;
 };
 
 const PI = Math.PI;
@@ -93,17 +87,17 @@ function generateBeamData(): { directions: THREE.Vector3[]; colors: THREE.Color[
 export const VolumetricCookie = forwardRef<THREE.Group, VolumetricCookieProps>(
   (
     {
-      lightPos = new THREE.Vector3(0, 0, 0),
+      discoUniforms,
       coneLength = 10,
       coneRadius = 0.15,
-      position = [0, 0, 0],
     },
     ref
   ) => {
     const meshRef = useRef<THREE.InstancedMesh>(null);
+    const groupRef = useRef<THREE.Group>(null);
     const matRef = useRef<THREE.ShaderMaterial>(null);
 
-    const [ refresh, setRefresh ] = useState(false);
+    const [refresh, setRefresh] = useState(false);
     const { directions, colors } = useMemo(() => generateBeamData(), []);
     const count = directions.length;
 
@@ -118,7 +112,12 @@ export const VolumetricCookie = forwardRef<THREE.Group, VolumetricCookieProps>(
       return arr;
     }, [colors, count]);
 
-    const lightPosVec = useMemo(() => toVector3(lightPos), [lightPos]);
+    // Update group position from shared uniforms each frame (no re-render)
+    useFrame(() => {
+      if (groupRef.current && discoUniforms) {
+        groupRef.current.position.copy(discoUniforms.uLightPos.value);
+      }
+    });
 
     const geometry = useMemo(() => {
       // Use CylinderGeometry with radiusTop=0 for a true pointed cone
@@ -169,7 +168,13 @@ export const VolumetricCookie = forwardRef<THREE.Group, VolumetricCookieProps>(
     const uniforms = useMemo(() => ({}), []);
 
     return (
-      <group ref={ref} position={position}>
+      <group
+        ref={(group) => {
+          (groupRef as React.MutableRefObject<THREE.Group | null>).current = group;
+          if (typeof ref === 'function') ref(group);
+          else if (ref) ref.current = group;
+        }}
+      >
         <instancedMesh
           ref={meshRef}
           args={[geometry, undefined, count]}
