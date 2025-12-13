@@ -3,10 +3,55 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 import cookieVert from './shaders/cookie.vert';
 import cookieFrag from './shaders/cookie.frag';
+import cookieWithShadowFrag from './shaders/cookieWithShadow.frag';
 import volumetricVert from './shaders/volumetricCones.vert';
 import volumetricFrag from './shaders/volumetricCones.frag';
 
 import '~/styles/style.css';
+
+// ============================================================================
+// Shadow Map Setup (Custom cube map rendered from light position)
+// ============================================================================
+
+const SHADOW_MAP_SIZE = 1024;
+const SHADOW_NEAR = 0.5;
+const SHADOW_FAR = 20;
+
+// Create cube render target for shadow map
+const shadowCubeRT = new THREE.WebGLCubeRenderTarget(SHADOW_MAP_SIZE, {
+  format: THREE.RGBAFormat,
+  type: THREE.FloatType,
+  minFilter: THREE.NearestFilter,
+  magFilter: THREE.NearestFilter,
+});
+
+// Camera for rendering shadow cube map
+const shadowCamera = new THREE.CubeCamera(SHADOW_NEAR, SHADOW_FAR, shadowCubeRT);
+
+// Depth material for rendering to shadow map (stores distance from light)
+const depthMaterial = new THREE.ShaderMaterial({
+  vertexShader: `
+    varying vec3 vWorldPosition;
+    void main() {
+      vec4 worldPos = modelMatrix * vec4(position, 1.0);
+      vWorldPosition = worldPos.xyz;
+      gl_Position = projectionMatrix * viewMatrix * worldPos;
+    }
+  `,
+  fragmentShader: `
+    uniform vec3 uLightPos;
+    uniform float uShadowFar;
+    varying vec3 vWorldPosition;
+    void main() {
+      float depth = length(vWorldPosition - uLightPos) / uShadowFar;
+      gl_FragColor = vec4(vec3(depth), 1.0);
+    }
+  `,
+  uniforms: {
+    uLightPos: { value: new THREE.Vector3(0, -1, 0) },
+    uShadowFar: { value: SHADOW_FAR },
+  },
+});
 
 // ============================================================================
 // Shared Uniforms (referenced by all cookie materials)
@@ -14,9 +59,13 @@ import '~/styles/style.css';
 
 const uniforms = {
   uLightPos: { value: new THREE.Vector3(0, -1, 0) },
-  uLightTarget: { value: new THREE.Vector3(0, 0, 0) },
-  uLightAngle: { value: Math.PI / 16 },
   uRotation: { value: 0 },
+};
+
+// Uniforms for shadow-enabled cookie material
+const shadowUniforms = {
+  ...uniforms,
+  uShadowMap: { value: shadowCubeRT.texture },
 };
 
 function createCookieMaterial(side: THREE.Side = THREE.FrontSide, transparent: boolean = false, depthWrite: boolean = true): THREE.ShaderMaterial {
@@ -27,6 +76,15 @@ function createCookieMaterial(side: THREE.Side = THREE.FrontSide, transparent: b
     side,
     transparent,
     depthWrite,
+  });
+}
+
+function createShadowCookieMaterial(side: THREE.Side = THREE.FrontSide): THREE.ShaderMaterial {
+  return new THREE.ShaderMaterial({
+    vertexShader: cookieVert,
+    fragmentShader: cookieWithShadowFrag,
+    uniforms: shadowUniforms,
+    side,
   });
 }
 
@@ -143,20 +201,19 @@ const canvas = document.querySelector('canvas.webgl') as HTMLCanvasElement;
 const scene = new THREE.Scene();
 scene.background = new THREE.Color('black');
 
-// Volumetric beams
+// Volumetric beams (excluded from shadow pass)
 const volumetricMesh = createVolumetricCones(5, 0.4);
 volumetricMesh.position.copy(uniforms.uLightPos.value);
 scene.add(volumetricMesh);
 
-// Room (inside of a box)
+// Room with shadow-enabled cookie material (single mesh)
 const room = new THREE.Mesh(
   new THREE.BoxGeometry(12, 4, 10),
-  createCookieMaterial(THREE.BackSide)
+  createShadowCookieMaterial(THREE.BackSide)
 );
 room.position.x = 2.5;
 room.position.y = 0.5;
 scene.add(room);
-
 
 // Disco ball visual
 const discoBall = new THREE.Mesh(
@@ -166,7 +223,7 @@ const discoBall = new THREE.Mesh(
 discoBall.position.copy(uniforms.uLightPos.value);
 scene.add(discoBall);
 
-// Props
+// Props (these cast shadows)
 const sphere = new THREE.Mesh(
   new THREE.SphereGeometry(1, 32, 32),
   createCookieMaterial(THREE.FrontSide, true, false)
@@ -180,6 +237,9 @@ const box = new THREE.Mesh(
 );
 box.position.set(0, 0, -3);
 scene.add(box);
+
+// Objects that cast shadows into the shadow map
+const shadowCasters: THREE.Mesh[] = [sphere, box, discoBall];
 
 // ============================================================================
 // Camera & Controls
@@ -228,6 +288,46 @@ window.addEventListener('resize', () => {
 
 const clock = new THREE.Clock();
 
+// Function to render our custom shadow cube map
+function renderShadowMap() {
+  // Position shadow camera at light position
+  shadowCamera.position.copy(uniforms.uLightPos.value);
+  depthMaterial.uniforms.uLightPos.value.copy(uniforms.uLightPos.value);
+  
+  // Store original state
+  const originalMaterials = new Map<THREE.Mesh, THREE.Material | THREE.Material[]>();
+  const originalBackground = scene.background;
+  const wasVisible = {
+    volumetric: volumetricMesh.visible,
+    room: room.visible,
+  };
+  
+  // Set background to white (1.0) = max depth = no shadow caster
+  scene.background = new THREE.Color(1, 1, 1);
+  
+  // Hide objects that shouldn't be in shadow map
+  volumetricMesh.visible = false;
+  room.visible = false;
+  
+  // Swap shadow casters to depth material
+  shadowCasters.forEach(obj => {
+    originalMaterials.set(obj, obj.material);
+    obj.material = depthMaterial;
+  });
+  
+  // Render the 6 faces of the cube shadow map
+  shadowCamera.update(renderer, scene);
+  
+  // Restore everything
+  scene.background = originalBackground;
+  volumetricMesh.visible = wasVisible.volumetric;
+  room.visible = wasVisible.room;
+  
+  shadowCasters.forEach(obj => {
+    obj.material = originalMaterials.get(obj)!;
+  });
+}
+
 function tick() {
   const elapsedTime = clock.getElapsedTime();
 
@@ -237,10 +337,14 @@ function tick() {
   
   // Rotate volumetric mesh to match
   volumetricMesh.rotation.y = uniforms.uRotation.value;
-  
-  // Also rotate the disco ball visual
-  // discoBall.rotation.y = uniforms.uRotation.value;
 
+  box.rotation.y = uniforms.uRotation.value;
+  box.position.y = Math.sin(elapsedTime) * 0.5;
+  
+  // Render shadow map first
+  renderShadowMap();
+
+  // Render main scene
   controls.update();
   renderer.render(scene, camera);
   requestAnimationFrame(tick);

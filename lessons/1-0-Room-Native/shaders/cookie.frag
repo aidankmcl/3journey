@@ -3,8 +3,6 @@ varying vec3 vNormal;
 varying vec3 vPosition;
 
 uniform vec3 uLightPos;
-uniform vec3 uLightTarget;
-uniform float uLightAngle;
 uniform float uRotation;
 
 #include "./includes/discoLight.glsl"
