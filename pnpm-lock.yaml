@@ -14,9 +14,6 @@ importers:
       '@doodle3d/clipper-js':
         specifier: ^1.0.11
         version: 1.0.11
-      clipper2-wasm:
-        specifier: ^0.2.1
-        version: 0.2.1
       '@react-three/drei':
         specifier: ^10.7.7
         version: 10.7.7(@react-three/fiber@9.4.2(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(three@0.181.0))(@types/react@19.2.7)(@types/three@0.181.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(three@0.181.0)
@@ -26,6 +23,9 @@ importers:
       '@react-three/postprocessing':
         specifier: ^3.0.4
         version: 3.0.4(@react-three/fiber@9.4.2(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(three@0.181.0))(@types/three@0.181.0)(react@19.2.1)(three@0.181.0)
+      clipper2-wasm:
+        specifier: ^0.2.1
+        version: 0.2.1
       gsap:
         specifier: ^3.13.0
         version: 3.13.0
@@ -44,6 +44,9 @@ importers:
       three:
         specifier: ^0.181.0
         version: 0.181.0
+      three-custom-shader-material:
+        specifier: ^6.4.0
+        version: 6.4.0(@react-three/fiber@9.4.2(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(three@0.181.0))(react@19.2.1)(three@0.181.0)
     devDependencies:
       '@types/node':
         specifier: ^24.10.0
@@ -354,10 +357,11 @@ packages:
   '@tybys/wasm-util@0.10.1':
     resolution: {integrity: sha512-9tTaPJLSiejZKx+Bmog4uSubteqTvFrVrURwkmHixBo0G4seD0zUxp98E1DzUBJxLQ3NPwXrGKDiVjwx/DpPsg==}
 
-  '@types/emscripten@1.41.5':
-    resolution: {integrity: sha512-cMQm7pxu6BxtHyqJ7mQZ2kXWV5SLmugybFdHCBbJ5eHzOo6VhBckEgAT3//rP5FwPHNPeEiq4SmQ5ucBwsOo4Q==}
   '@types/draco3d@1.4.10':
     resolution: {integrity: sha512-AX22jp8Y7wwaBgAixaSvkoG4M/+PlAcm3Qs4OW8yT9DM4xUpWKeFhLueTAyZF39pviAdcDdeJoACapiAceqNcw==}
+
+  '@types/emscripten@1.41.5':
+    resolution: {integrity: sha512-cMQm7pxu6BxtHyqJ7mQZ2kXWV5SLmugybFdHCBbJ5eHzOo6VhBckEgAT3//rP5FwPHNPeEiq4SmQ5ucBwsOo4Q==}
 
   '@types/node@24.10.0':
     resolution: {integrity: sha512-qzQZRBqkFsYyaSWXuEHc2WR9c0a0CXwiE5FWUvn7ZM+vdy1uZLfCunD38UzhuB7YN/J11ndbDBcTmOdxJo9Q7A==}
@@ -438,8 +442,6 @@ packages:
   buffer-from@1.1.2:
     resolution: {integrity: sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==}
 
-  clipper2-wasm@0.2.1:
-    resolution: {integrity: sha512-WXkKLsfLtB0952jVky77xgqCcNRa641aDZDtB0vmU6wiaUd45nb1aQpqz21JJMUg4uXkjAYPCOF3iH5lMfS9tw==}
   buffer@6.0.3:
     resolution: {integrity: sha512-FTiCpNxtwiZZHEZbcbTIcZjERVICn9yq/pDFkTl95/AxzD1naBctN7YO68riM/gLSDY7sdrMby8hofADYuuqOA==}
 
@@ -448,6 +450,9 @@ packages:
     engines: {node: '>=22.0.0', npm: '>=10.5.1'}
     peerDependencies:
       three: '>=0.126.1'
+
+  clipper2-wasm@0.2.1:
+    resolution: {integrity: sha512-WXkKLsfLtB0952jVky77xgqCcNRa641aDZDtB0vmU6wiaUd45nb1aQpqz21JJMUg4uXkjAYPCOF3iH5lMfS9tw==}
 
   commander@2.20.3:
     resolution: {integrity: sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==}
@@ -998,6 +1003,18 @@ packages:
     peerDependencies:
       react: '>=17.0'
 
+  three-custom-shader-material@6.4.0:
+    resolution: {integrity: sha512-dIbkwX1P4DcHMOZrywW+/TDp5qJhlyU6NP/2kmHw91UqC+TrK4JSBtAV3qGc6UnkqSOmR1i0O+Yz5EnTp2aQ1g==}
+    peerDependencies:
+      '@react-three/fiber': '>=8.0'
+      react: '>=18.0'
+      three: '>=0.159'
+    peerDependenciesMeta:
+      '@react-three/fiber':
+        optional: true
+      react:
+        optional: true
+
   three-mesh-bvh@0.8.3:
     resolution: {integrity: sha512-4G5lBaF+g2auKX3P0yqx+MJC6oVt6sB5k+CchS6Ob0qvH0YIhuUk1eYr7ktsIpY+albCqE80/FVQGV190PmiAg==}
     peerDependencies:
@@ -1383,8 +1400,9 @@ snapshots:
       tslib: 2.8.1
     optional: true
 
-  '@types/emscripten@1.41.5': {}
   '@types/draco3d@1.4.10': {}
+
+  '@types/emscripten@1.41.5': {}
 
   '@types/node@24.10.0':
     dependencies:
@@ -1462,9 +1480,6 @@ snapshots:
 
   buffer-from@1.1.2: {}
 
-  clipper2-wasm@0.2.1:
-    dependencies:
-      '@types/emscripten': 1.41.5
   buffer@6.0.3:
     dependencies:
       base64-js: 1.5.1
@@ -1473,6 +1488,10 @@ snapshots:
   camera-controls@3.1.2(three@0.181.0):
     dependencies:
       three: 0.181.0
+
+  clipper2-wasm@0.2.1:
+    dependencies:
+      '@types/emscripten': 1.41.5
 
   commander@2.20.3: {}
 
@@ -1975,6 +1994,13 @@ snapshots:
 
   suspend-react@0.1.3(react@19.2.1):
     dependencies:
+      react: 19.2.1
+
+  three-custom-shader-material@6.4.0(@react-three/fiber@9.4.2(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(three@0.181.0))(react@19.2.1)(three@0.181.0):
+    dependencies:
+      three: 0.181.0
+    optionalDependencies:
+      '@react-three/fiber': 9.4.2(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(three@0.181.0)
       react: 19.2.1
 
   three-mesh-bvh@0.8.3(three@0.181.0):

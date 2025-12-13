@@ -96,6 +96,8 @@
       .thumb.no-thumb span {
         font-size: 1.5rem;
         font-weight: 600;
+        margin: 1rem;
+        text-align: center;
         letter-spacing: 0.02em;
         text-transform: uppercase;
         color: rgba(226, 232, 240, 0.75);
@@ -162,12 +164,12 @@
 
       const formatLabel = (segment) => {
         const unprefixed = segment.replace("lessons/", "");
-        const [chapter, ep, name] = unprefixed.split('-');
+        const [chapter, ep, ...name] = unprefixed.split('-');
 
         if (/^\d+$/.test(unprefixed)) {
           return `Lesson ${unprefixed.padStart(2, "0")}`;
         }
-        return `${chapter}.${ep} / ${name}`;
+        return `${chapter}.${ep} / ${name.join(' ')}`;
       };
 
       const lessonNames = [
