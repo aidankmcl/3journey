@@ -7,6 +7,7 @@ import { SCENE_CONFIG, ANIMATION_CONFIG } from './config';
 import { ShadowSystem } from './shadowSystem';
 import { createCookieUniforms, createShadowCookieUniforms } from './materials';
 import { createSceneObjects, addObjectsToScene } from './sceneObjects';
+import { CameraDirector, shots } from './camera';
 
 // ============================================================================
 // Initialize Systems
@@ -49,9 +50,23 @@ camera.position.set(-5, 0, 0);
 camera.lookAt(discoBall.position);
 scene.add(camera);
 
-const controls = new OrbitControls(camera, canvas);
-controls.enableDamping = true;
-controls.dampingFactor = 0.05;
+// Toggle between CameraDirector (production) and OrbitControls (development)
+const USE_CAMERA_DIRECTOR = true;
+
+// Camera Director for choreographed shots
+const cameraDirector = USE_CAMERA_DIRECTOR
+  ? new CameraDirector(camera, shots, { autoAdvance: true, loop: true })
+  : null;
+
+// OrbitControls for development/debugging
+const controls = !USE_CAMERA_DIRECTOR
+  ? new OrbitControls(camera, canvas)
+  : null;
+
+if (controls) {
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.05;
+}
 
 // ============================================================================
 // Renderer
@@ -103,8 +118,14 @@ function tick() {
     excludeFromShadow
   );
 
+  // Update camera (director or orbit controls)
+  if (cameraDirector) {
+    cameraDirector.update(elapsedTime);
+  } else if (controls) {
+    controls.update();
+  }
+
   // Render main scene
-  controls.update();
   renderer.render(scene, camera);
   requestAnimationFrame(tick);
 }
