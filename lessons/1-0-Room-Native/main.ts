@@ -48,6 +48,8 @@ const sizes = {
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100);
 camera.position.set(-5, 0, 0);
 camera.lookAt(discoBall.position);
+// Enable camera to see both layer 0 (default) and layer 1 (volumetric cones)
+camera.layers.enable(1);
 scene.add(camera);
 
 // Toggle between CameraDirector (production) and OrbitControls (development)

@@ -51,7 +51,10 @@ export function createSceneObjects(
   // Props (these cast shadows)
   const sphere = new THREE.Mesh(
     new THREE.SphereGeometry(config.props.sphere.radius, 32, 32),
-    createCookieMaterial(uniforms, {
+    createCookieMaterial({
+      ...uniforms,
+      uColorMask: new THREE.Uniform(new THREE.Color(1, 0, 0))
+    }, {
       side: THREE.FrontSide,
       transparent: true,
       depthWrite: false,
@@ -65,7 +68,10 @@ export function createSceneObjects(
       config.props.box.size,
       config.props.box.size
     ),
-    createCookieMaterial(uniforms, {
+    createCookieMaterial({
+      ...uniforms,
+      uColorMask: new THREE.Uniform(new THREE.Color(0, 1, 0))
+    }, {
       side: THREE.FrontSide,
       transparent: true,
       depthWrite: false,
@@ -88,7 +94,7 @@ export function createSceneObjects(
  * Add all scene objects to the scene
  */
 export function addObjectsToScene(scene: THREE.Scene, objects: SceneObjects): void {
-  scene.add(objects.volumetricMesh);
+  // scene.add(objects.volumetricMesh);
   scene.add(objects.room);
   scene.add(objects.discoBall);
   scene.add(objects.sphere);

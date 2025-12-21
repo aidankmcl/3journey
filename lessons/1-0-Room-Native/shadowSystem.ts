@@ -8,6 +8,8 @@ import { SHADOW_CONFIG } from './config';
 /**
  * Manages custom cube shadow map rendering from a point light position.
  * Uses a CubeCamera to render depth values from the light's perspective.
+ * 
+ * Shadow map format: RGB = colorMask of shadow caster, A = depth
  */
 export class ShadowSystem {
   readonly cubeRenderTarget: THREE.WebGLCubeRenderTarget;
@@ -32,7 +34,8 @@ export class ShadowSystem {
       this.cubeRenderTarget
     );
 
-    // Depth material for rendering to shadow map (stores distance from light)
+    // Depth material for rendering to shadow map
+    // Stores: RGB = colorMask of the shadow caster, A = depth from light
     this.depthMaterial = new THREE.ShaderMaterial({
       vertexShader: `
         varying vec3 vWorldPosition;
@@ -45,15 +48,18 @@ export class ShadowSystem {
       fragmentShader: `
         uniform vec3 uLightPos;
         uniform float uShadowFar;
+        uniform vec3 uColorMask;
         varying vec3 vWorldPosition;
         void main() {
           float depth = length(vWorldPosition - uLightPos) / uShadowFar;
-          gl_FragColor = vec4(vec3(depth), 1.0);
+          // RGB = colorMask of shadow caster, A = depth
+          gl_FragColor = vec4(uColorMask, depth);
         }
       `,
       uniforms: {
         uLightPos: { value: new THREE.Vector3(0, -1, 0) },
         uShadowFar: { value: this.config.far },
+        uColorMask: { value: new THREE.Color(1, 1, 1) },
       },
     });
   }
@@ -90,7 +96,8 @@ export class ShadowSystem {
     const originalBackground = scene.background;
     const originalVisibility = new Map<THREE.Object3D, boolean>();
 
-    // Set background to white (1.0) = max depth = no shadow caster
+    // Set background to white (1.0) in alpha = max depth = no shadow caster
+    // RGB white means no color masking
     scene.background = new THREE.Color(1, 1, 1);
 
     // Hide objects that shouldn't be in shadow map
@@ -99,10 +106,24 @@ export class ShadowSystem {
       obj.visible = false;
     });
 
-    // Swap shadow casters to depth material
+    // Swap shadow casters to depth material, preserving their colorMask
     shadowCasters.forEach(obj => {
       originalMaterials.set(obj, obj.material);
-      obj.material = this.depthMaterial;
+      
+      // Create a cloned depth material with this object's colorMask
+      const depthMat = this.depthMaterial.clone();
+      depthMat.uniforms.uLightPos = this.depthMaterial.uniforms.uLightPos;
+      depthMat.uniforms.uShadowFar = this.depthMaterial.uniforms.uShadowFar;
+      
+      // Extract colorMask from the original material if it exists
+      const originalMat = obj.material as THREE.ShaderMaterial;
+      if (originalMat.uniforms?.uColorMask?.value) {
+        depthMat.uniforms.uColorMask = { value: originalMat.uniforms.uColorMask.value.clone() };
+      } else {
+        depthMat.uniforms.uColorMask = { value: new THREE.Color(1, 1, 1) };
+      }
+      
+      obj.material = depthMat;
     });
 
     // Render the 6 faces of the cube shadow map

@@ -80,17 +80,22 @@ export function createVolumetricCones(coneLength = 5, coneRadius = 1.0): THREE.I
   });
   geometry.setAttribute('aColor', new THREE.InstancedBufferAttribute(colorArray, 3));
 
-  // Material
+  // Material - use additive blending so cones appear as light emission
+  // This prevents artifacts where cones show at full opacity only in shadow regions
   const material = new THREE.ShaderMaterial({
     vertexShader: volumetricVert,
     fragmentShader: volumetricFrag,
     transparent: true,
     depthWrite: false,
+    depthTest: true,
     side: THREE.FrontSide,
+    blending: THREE.AdditiveBlending,
   });
 
   // Instanced mesh
   const mesh = new THREE.InstancedMesh(geometry, material, count);
+  mesh.castShadow = false;
+  mesh.receiveShadow = false;
   mesh.frustumCulled = false;
 
   // Set instance transforms
@@ -104,6 +109,9 @@ export function createVolumetricCones(coneLength = 5, coneRadius = 1.0): THREE.I
     mesh.setMatrixAt(i, dummy.matrix);
   });
   mesh.instanceMatrix.needsUpdate = true;
+
+  // Put volumetric cones on layer 1 to isolate from shadow system
+  mesh.layers.set(1);
 
   return mesh;
 }

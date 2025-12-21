@@ -12,6 +12,7 @@ export interface CookieUniforms {
   [uniform: string]: THREE.IUniform;
   uLightPos: { value: THREE.Vector3 };
   uRotation: { value: number };
+  uColorMask: { value: THREE.Color };
 }
 
 export interface ShadowCookieUniforms extends CookieUniforms {
@@ -21,10 +22,11 @@ export interface ShadowCookieUniforms extends CookieUniforms {
 /**
  * Create shared uniforms for cookie materials
  */
-export function createCookieUniforms(lightPos: THREE.Vector3): CookieUniforms {
+export function createCookieUniforms(lightPos: THREE.Vector3, colorMask: [number, number, number] = [1,1,1]): CookieUniforms {
   return {
     uLightPos: { value: lightPos.clone() },
     uRotation: { value: 0 },
+    uColorMask: { value: new THREE.Color(...colorMask) }
   };
 }
 
