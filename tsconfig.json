@@ -27,5 +27,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["lessons", "shared", "*.d.ts"]
+  "include": ["lessons", "shared", "*.d.ts", "public/draco"]
 }

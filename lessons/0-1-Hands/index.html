@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title></title>
+
+    <script>
+      const segments = window.location.pathname.split("/").filter(Boolean);
+      let folder = "";
+      if (segments.length) {
+        const last = segments[segments.length - 1];
+        folder = last.includes(".") ? segments[segments.length - 2] || "" : last;
+      }
+      if (folder) document.title = folder;
+    </script>
+  </head>
+  <body>
+    <style>      
+      /* 1. We stack the video and canvas on top of each other */
+      #container { position: relative; width: 100vw; height: 100vh; }
+      
+      /* 2. The webcam video is the background */
+      #webcam {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Ensures video fills screen */
+        transform: scaleX(-1); /* Mirror the video feed */
+        z-index: 0;
+      }
+
+      /* 3. The Three.js canvas sits on top */
+      canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        pointer-events: none; /* Lets clicks pass through to video/UI */
+      }
+    </style>
+
+    <div id="container">
+      <video id="webcam" autoplay playsinline></video>
+      <canvas class="webgl"></canvas>
+    </div>
+
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

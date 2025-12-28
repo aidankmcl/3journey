@@ -1,180 +1,187 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
-import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js'
-import { HDRLoader } from 'three/addons/loaders/HDRLoader.js'
-import { mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js'
+// import { HDRLoader } from 'three/addons/loaders/HDRLoader.js'
+
 import CustomShaderMaterial from 'three-custom-shader-material/vanilla';
+import { Brush, Evaluator, SUBTRACTION } from 'three-bvh-csg';
 import GUI from 'lil-gui'
 
-import '~/styles/style.css';
-
 /**
-* Base
-*/
+ * Base
+ */
 // Debug
 const gui = new GUI({ width: 325 })
-const debugObject = {}
+const debugObject = {
+  colorWaterDeep: '#002b3d',
+  colorWaterSurface: '#66a8ff',
+  colorSand: '#ffe894',
+  colorGrass: '#85d534',
+  colorSnow: '#ffffff',
+  colorRock: '#bfbd8d',
+}
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
-if (!canvas) throw new Error("No canvas available");
+if (!canvas) throw new Error('No canvas');
 
 // Scene
 const scene = new THREE.Scene()
 
-// Loaders
-const rgbeLoader = new HDRLoader()
-const dracoLoader = new DRACOLoader()
-dracoLoader.setDecoderPath('./draco/')
-const gltfLoader = new GLTFLoader()
-gltfLoader.setDRACOLoader(dracoLoader)
-
 /**
-* Environment map
-*/
-import hdrURL from './urban_alley_01_1k.hdr';
-rgbeLoader.load(hdrURL, (environmentMap) =>
-  {
-  environmentMap.mapping = THREE.EquirectangularReflectionMapping
-  
-  scene.background = environmentMap
-  scene.environment = environmentMap
-})
+ * Environment map
+ */
+// import hdrURL from './spruit_sunrise.hdr';
+// import hdrURL from './../4-42-Wobbly-Sphere/urban_alley_01_1k.hdr';
+// const hdrLoader = new HDRLoader();
+// hdrLoader.load(hdrURL, (environmentMap) => {
+//   environmentMap.mapping = THREE.EquirectangularReflectionMapping
 
-/**
-* Wobble
-*/
-
-import vertexShader from './shaders/wobble.vert';
-import fragmentShader from './shaders/wobble.frag';
+//   scene.background = environmentMap
+//   scene.environment = environmentMap
+// })
 
 const uniforms = {
   uTime: new THREE.Uniform(0),
-
-  uPositionFrequency: new THREE.Uniform(0.5),
-  uTimeFrequency: new THREE.Uniform(0.4),
-  uStrength: new THREE.Uniform(0.3),
-
-  uWarpPositionFrequency: new THREE.Uniform(0.5),
-  uWarpTimeFrequency: new THREE.Uniform(0.4),
-  uWarpStrength: new THREE.Uniform(0.3),
-
-  uColorA: new THREE.Uniform(new THREE.Color('red')),
-  uColorB: new THREE.Uniform(new THREE.Color('blue')),
+  uPositionFrequency: new THREE.Uniform(0.2),
+  uStrength: new THREE.Uniform(2.5),
+  uWarpFrequency: new THREE.Uniform(7),
+  uWarpStrength: new THREE.Uniform(0.2),
+  // Colors
+  uColorWaterDeep: new THREE.Uniform(new THREE.Color(debugObject.colorWaterDeep)),
+  uColorWaterSurface: new THREE.Uniform(new THREE.Color(debugObject.colorWaterSurface)),
+  uColorSand: new THREE.Uniform(new THREE.Color(debugObject.colorSand)),
+  uColorGrass: new THREE.Uniform(new THREE.Color(debugObject.colorGrass)),
+  uColorSnow: new THREE.Uniform(new THREE.Color(debugObject.colorSnow)),
+  uColorRock: new THREE.Uniform(new THREE.Color(debugObject.colorRock)),
 }
+gui.add(uniforms.uPositionFrequency, 'value', 0, 1, .001).name('uPositionFrequency')
+gui.add(uniforms.uStrength, 'value', 0, 10, .001).name('uStrength')
+gui.add(uniforms.uWarpFrequency, 'value', 0, 10, .001).name('uWarpFrequency')
+gui.add(uniforms.uWarpStrength, 'value', 0, 1, .001).name('uWarpStrength')
 
-// Material
+gui.addColor(debugObject, 'colorWaterDeep').onChange((v: string) => { uniforms.uColorWaterDeep.value.set(v) })
+gui.addColor(debugObject, 'colorWaterSurface').onChange((v: string) => { uniforms.uColorWaterSurface.value.set(v) })
+gui.addColor(debugObject, 'colorSand').onChange((v: string) => { uniforms.uColorSand.value.set(v) })
+gui.addColor(debugObject, 'colorGrass').onChange((v: string) => { uniforms.uColorGrass.value.set(v) })
+gui.addColor(debugObject, 'colorSnow').onChange((v: string) => { uniforms.uColorSnow.value.set(v) })
+gui.addColor(debugObject, 'colorRock').onChange((v: string) => { uniforms.uColorRock.value.set(v) })
+
+const geometry = new THREE.PlaneGeometry(10, 10, 500, 500);
+geometry.rotateX(-Math.PI * 0.5);
+geometry.deleteAttribute('uv');
+geometry.deleteAttribute('normal');
+
+import fragmentShader from './shaders/frag.glsl';
+import vertexShader from './shaders/vert.glsl';
 const material = new CustomShaderMaterial({
-  baseMaterial: THREE.MeshPhysicalMaterial,
-  vertexShader,
+  baseMaterial: THREE.MeshStandardMaterial,
+
   fragmentShader,
+  vertexShader,
   uniforms,
 
-  // MeshPhysicalMaterial
   metalness: 0,
   roughness: 0.5,
-  color: '#ffffff',
-  transmission: 0,
-  ior: 1.5,
-  thickness: 1.5,
-  transparent: true,
-  wireframe: false
+  color: '#85d534',
 });
 
 const depthMaterial = new CustomShaderMaterial({
   baseMaterial: THREE.MeshDepthMaterial,
+
   vertexShader,
   uniforms,
 
   depthPacking: THREE.RGBADepthPacking
 });
 
-gui.add(uniforms.uPositionFrequency, 'value', 0, 1, 0.001).name('uPositionFrequency')
-gui.add(uniforms.uTimeFrequency, 'value', 0, 1, 0.001).name('uTimeFrequency')
-gui.add(uniforms.uStrength, 'value', 0, 1, 0.001).name('uStrength')
-gui.add(uniforms.uWarpPositionFrequency, 'value', 0, 1, 0.001).name('uWarpPositionFrequency')
-gui.add(uniforms.uWarpTimeFrequency, 'value', 0, 1, 0.001).name('uWarpTimeFrequency')
-gui.add(uniforms.uWarpStrength, 'value', 0, 1, 0.001).name('uWarpStrength')
+const terrain = new THREE.Mesh(geometry, material);
+terrain.customDepthMaterial = depthMaterial;
+terrain.receiveShadow = true;
+terrain.castShadow = true;
+scene.add(terrain);
 
-gui.addColor(uniforms.uColorA, 'value').name('uColorA');
-gui.addColor(uniforms.uColorB, 'value').name('uColorB');
-
-// @ts-ignore
-gui.add(material, 'metalness', 0, 1, 0.001) // @ts-ignore
-gui.add(material, 'roughness', 0, 1, 0.001) // @ts-ignore
-gui.add(material, 'transmission', 0, 1, 0.001) // @ts-ignore
-gui.add(material, 'ior', 0, 10, 0.001) // @ts-ignore
-gui.add(material, 'thickness', 0, 10, 0.001) // @ts-ignore
-gui.addColor(material, 'color')
-
-// Geometry
-let geometry = new THREE.IcosahedronGeometry(2.5, 50) as THREE.BufferGeometry;
-geometry = mergeVertices(geometry);
-geometry.computeTangents();
-
-// Mesh
-const wobble = new THREE.Mesh(geometry, material)
-wobble.customDepthMaterial = depthMaterial;
-wobble.receiveShadow = true
-wobble.castShadow = true
-scene.add(wobble)
-
-/**
-* Plane
-*/
-const plane = new THREE.Mesh(
-  new THREE.PlaneGeometry(15, 15, 15),
-  new THREE.MeshStandardMaterial()
+// Water
+const water = new THREE.Mesh(
+    new THREE.PlaneGeometry(10, 10, 1, 1),
+    new THREE.MeshPhysicalMaterial({
+      transmission: 1,
+      roughness: 0.3,
+    })
 )
-plane.receiveShadow = true
-plane.rotation.y = Math.PI
-plane.position.y = - 5
-plane.position.z = 5
-scene.add(plane)
+water.rotateX(-Math.PI * 0.5);
+water.position.y = -0.05;
+scene.add(water)
+
+
+// Board
+const boardFill = new Brush(new THREE.BoxGeometry(11, 2, 11));
+const boardHole = new Brush(new THREE.BoxGeometry(10, 2, 10));
+// boardHole.position.y = 0.1;
+// boardHole.updateMatrixWorld();
+const evaluator = new Evaluator();
+
+const board = evaluator.evaluate(boardFill, boardHole, SUBTRACTION);
+board.castShadow = true;
+board.receiveShadow = true;
+board.geometry.clearGroups();
+board.material = new THREE.MeshStandardMaterial({
+  color: '#ffffff',
+  metalness: 0,
+  roughness: 0.3,
+});
+board.updateMatrixWorld();
+
+scene.add(board);
+
 
 /**
-* Lights
-*/
-const directionalLight = new THREE.DirectionalLight('#ffffff', 3)
+ * Lights
+ */
+const ambientLight = new THREE.AmbientLight('#ffeaa4', 0.4);
+scene.add(ambientLight);
+const directionalLight = new THREE.DirectionalLight('#ffffff', 2)
+directionalLight.position.set(6.25, 3, 4)
 directionalLight.castShadow = true
 directionalLight.shadow.mapSize.set(1024, 1024)
-directionalLight.shadow.camera.far = 15
-directionalLight.shadow.normalBias = 0.05
-directionalLight.position.set(0.25, 2, - 2.25)
+directionalLight.shadow.camera.near = 0.1
+directionalLight.shadow.camera.far = 30
+directionalLight.shadow.camera.top = 8
+directionalLight.shadow.camera.right = 8
+directionalLight.shadow.camera.bottom = -8
+directionalLight.shadow.camera.left = -8
 scene.add(directionalLight)
 
 /**
-* Sizes
-*/
+ * Sizes
+ */
 const sizes = {
-  width: window.innerWidth,
-  height: window.innerHeight,
-  pixelRatio: Math.min(window.devicePixelRatio, 2)
+    width: window.innerWidth,
+    height: window.innerHeight,
+    pixelRatio: Math.min(window.devicePixelRatio, 2)
 }
 
 window.addEventListener('resize', () =>
-  {
-  // Update sizes
-  sizes.width = window.innerWidth
-  sizes.height = window.innerHeight
-  sizes.pixelRatio = Math.min(window.devicePixelRatio, 2)
-  
-  // Update camera
-  camera.aspect = sizes.width / sizes.height
-  camera.updateProjectionMatrix()
-  
-  // Update renderer
-  renderer.setSize(sizes.width, sizes.height)
-  renderer.setPixelRatio(sizes.pixelRatio)
+{
+    // Update sizes
+    sizes.width = window.innerWidth
+    sizes.height = window.innerHeight
+    sizes.pixelRatio = Math.min(window.devicePixelRatio, 2)
+
+    // Update camera
+    camera.aspect = sizes.width / sizes.height
+    camera.updateProjectionMatrix()
+
+    // Update renderer
+    renderer.setSize(sizes.width, sizes.height)
+    renderer.setPixelRatio(sizes.pixelRatio)
 })
 
 /**
-* Camera
-*/
+ * Camera
+ */
 // Base camera
 const camera = new THREE.PerspectiveCamera(35, sizes.width / sizes.height, 0.1, 100)
-camera.position.set(13, - 3, - 5)
+camera.position.set(-15, 8, 10)
 scene.add(camera)
 
 // Controls
@@ -182,11 +189,11 @@ const controls = new OrbitControls(camera, canvas as HTMLElement)
 controls.enableDamping = true
 
 /**
-* Renderer
-*/
+ * Renderer
+ */
 const renderer = new THREE.WebGLRenderer({
-  canvas: canvas,
-  antialias: true
+    canvas: canvas,
+    antialias: true
 })
 renderer.shadowMap.enabled = true
 renderer.shadowMap.type = THREE.PCFSoftShadowMap
@@ -196,24 +203,23 @@ renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(sizes.pixelRatio)
 
 /**
-* Animate
-*/
+ * Animate
+ */
 const clock = new THREE.Clock()
 
 const tick = () =>
-  {
-  const elapsedTime = clock.getElapsedTime();
+{
+    const elapsedTime = clock.getElapsedTime()
+    uniforms.uTime.value = elapsedTime;
 
-  uniforms.uTime.value = elapsedTime;
-  
-  // Update controls
-  controls.update()
-  
-  // Render
-  renderer.render(scene, camera)
-  
-  // Call tick again on the next frame
-  window.requestAnimationFrame(tick)
+    // Update controls
+    controls.update()
+
+    // Render
+    renderer.render(scene, camera)
+
+    // Call tick again on the next frame
+    window.requestAnimationFrame(tick)
 }
 
 tick()
