@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Three.js Lessons Directory</title>
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        background: radial-gradient(circle at top, #1e293b 0, #0f172a 55%);
+        color: #e2e8f0;
+        display: flex;
+        flex-direction: column;
+      }
+
+      header {
+        padding: 3rem 1.5rem 1rem;
+        text-align: center;
+      }
+
+      header h1 {
+        margin: 0;
+        font-size: clamp(2rem, 5vw, 3.25rem);
+        font-weight: 700;
+        letter-spacing: -0.03em;
+      }
+
+      header p {
+        margin: 0.75rem auto 0;
+        max-width: 48ch;
+        font-size: 1.05rem;
+        color: #94a3b8;
+      }
+
+      main {
+        width: min(1100px, 92vw);
+        margin: 0 auto;
+        padding: 0 0 2rem;
+        flex: 1;
+      }
+
+      .lesson-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        gap: clamp(1rem, 2vw, 1.75rem);
+        padding: 0 0 2rem;
+      }
+
+      .lesson-card {
+        display: block;
+        border-radius: 18px;
+        overflow: hidden;
+        background: rgba(15, 23, 42, 0.8);
+        border: 1px solid rgba(148, 163, 184, 0.12);
+        text-decoration: none;
+        color: inherit;
+        box-shadow: 0 24px 60px -40px rgba(15, 23, 42, 0.95);
+        transition: transform 150ms ease, box-shadow 150ms ease,
+          border-color 150ms ease;
+      }
+
+      .lesson-card:focus-visible {
+        outline: 3px solid #38bdf8;
+        outline-offset: 4px;
+      }
+
+      .lesson-card:hover {
+        transform: translateY(-6px);
+        border-color: rgba(148, 163, 184, 0.35);
+        box-shadow: 0 28px 65px -38px rgba(14, 116, 144, 0.65);
+      }
+
+      .thumb {
+        aspect-ratio: 16 / 10;
+        background: linear-gradient(135deg, rgba(56, 189, 248, 0.25), transparent),
+          radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.2), transparent 60%),
+          rgba(15, 23, 42, 0.9);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .thumb.no-thumb span {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 1rem;
+        text-align: center;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+        color: rgba(226, 232, 240, 0.75);
+      }
+
+      .thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .details {
+        padding: 1.1rem 1.35rem 1.4rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.55rem;
+      }
+
+      .details h2 {
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        color: #f8fafc;
+      }
+
+      .details p {
+        margin: 0;
+        font-size: 0.95rem;
+        color: #94a3b8;
+      }
+
+      .empty-state {
+        margin: 3rem auto 0;
+        padding: 1rem 1.5rem;
+        border-radius: 14px;
+        border: 1px dashed rgba(148, 163, 184, 0.35);
+        background: rgba(15, 23, 42, 0.55);
+        color: #94a3b8;
+        max-width: 360px;
+        text-align: center;
+      }
+    </style>
+    <script type="module" crossorigin src="/3journey/assets/index-ktebxO0S.js"></script>
+    <link rel="modulepreload" crossorigin href="/3journey/assets/modulepreload-polyfill-BnBYtx4y.js">
+  </head>
+  <body>
+    <header>
+      <h1>Three.js Lessons</h1>
+      <p>Browse the available lessons and jump into the one you&rsquo;d like to explore.</p>
+    </header>
+    <main>
+      <section id="lesson-grid" class="lesson-grid" aria-live="polite"></section>
+      <p class="empty-state" hidden>No lessons are available yet. Add a new folder to get started.</p>
+    </main>
+  </body>
+</html>

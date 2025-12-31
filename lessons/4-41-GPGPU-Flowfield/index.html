@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/3journey/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title></title>
+
+    <script>
+      const segments = window.location.pathname.split("/").filter(Boolean);
+      let folder = "";
+      if (segments.length) {
+        const last = segments[segments.length - 1];
+        folder = last.includes(".") ? segments[segments.length - 2] || "" : last;
+      }
+      if (folder) document.title = folder;
+    </script>
+    <script type="module" crossorigin src="/3journey/assets/lessons/4-41-GPGPU-Flowfield-C9pEEb-2.js"></script>
+    <link rel="modulepreload" crossorigin href="/3journey/assets/modulepreload-polyfill-BnBYtx4y.js">
+    <link rel="modulepreload" crossorigin href="/3journey/assets/lil-gui.esm-DBlFozw-.js">
+    <link rel="modulepreload" crossorigin href="/3journey/assets/three.module-LFc9tN89.js">
+    <link rel="modulepreload" crossorigin href="/3journey/assets/OrbitControls-D8EFuDj6.js">
+    <link rel="modulepreload" crossorigin href="/3journey/assets/DRACOLoader-SchachWg.js">
+    <link rel="modulepreload" crossorigin href="/3journey/assets/BufferGeometryUtils-B3Y9T7UZ.js">
+    <link rel="modulepreload" crossorigin href="/3journey/assets/GLTFLoader-BYphv5hi.js">
+    <link rel="stylesheet" crossorigin href="/3journey/assets/style-BO8guYb1.css">
+  </head>
+  <body>
+    <canvas class="webgl"></canvas>
+  </body>
+</html>

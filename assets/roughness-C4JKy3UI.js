@@ -1,0 +1,1 @@
+var e=`/3journey/assets/alpha-BVV1PVvO.jpg`,t=`/3journey/assets/ambientOcclusion-Cpn-KbSr.jpg`,n=`/3journey/assets/metalness-Z1AicQxD.jpg`,r=`/3journey/assets/normal-TQKT5D1r.jpg`,i=`/3journey/assets/roughness-BvXaFbLD.jpg`;export{e as a,t as i,r as n,n as r,i as t};
