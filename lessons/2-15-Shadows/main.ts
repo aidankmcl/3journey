@@ -1,13 +1,10 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
-import GUI from 'lil-gui'
 import { RectAreaLightHelper } from 'three/addons'
 
 /**
  * Base
  */
-// Debug
-const gui = new GUI()
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl')

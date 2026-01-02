@@ -15,10 +15,10 @@ const [
   doorAlphaTexture,
   doorAOTexture,
   doorColorTexture,
-  doorHeightTexture,
-  doorMetalnessTexture,
-  doorNormalTexture,
-  doorRoughnessTexture
+  // doorHeightTexture,
+  // doorMetalnessTexture,
+  // doorNormalTexture,
+  // doorRoughnessTexture
 ] = [
   doorAlpha,
   doorAO,

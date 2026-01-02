@@ -3,7 +3,6 @@ import * as THREE from 'three';
 import doorAlpha from '~/textures/door/alpha.jpg';
 import doorAO from '~/textures/door/ambientOcclusion.jpg';
 import doorColor from '~/textures/door/color.jpg';
-import doorHeight from '~/textures/door/height.jpg';
 import doorMetalness from '~/textures/door/metalness.jpg';
 import doorNormal from '~/textures/door/normal.jpg';
 import doorRoughness from '~/textures/door/roughness.jpg';
@@ -15,7 +14,6 @@ const [
   doorAlphaTexture,
   doorAOTexture,
   doorColorTexture,
-  doorHeightTexture,
   doorMetalnessTexture,
   doorNormalTexture,
   doorRoughnessTexture
@@ -23,7 +21,6 @@ const [
   doorAlpha,
   doorAO,
   doorColor,
-  doorHeight,
   doorMetalness,
   doorNormal,
   doorRoughness
@@ -49,7 +46,7 @@ export const DEFAULTS = {
 } satisfies Options;
 
 export function Door(options: Options = DEFAULTS) {
-  const { width, length, height } = options;
+  const { width, height } = options;
   // Door
   // This mat needs light
   const doorMat = new THREE.MeshStandardMaterial({

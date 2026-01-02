@@ -19,7 +19,7 @@ export function Helmet() {
 
   const helmet = useLoader(GLTFLoader, flightHelmetURL, (loader) => {
     const dracoLoader = new DRACOLoader()
-    dracoLoader.setDecoderPath('./draco/')
+    dracoLoader.setDecoderPath('./3journey/draco/')
     loader.setDRACOLoader(dracoLoader)
   });
 

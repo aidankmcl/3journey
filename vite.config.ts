@@ -4,7 +4,6 @@ import { resolve } from 'path';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import fg from 'fast-glob';
-// import { glslify } from 'vite-plugin-glslify';
 import glsl from 'vite-plugin-glsl';
 import fullReload from 'vite-plugin-full-reload';
 
@@ -29,6 +28,7 @@ function htmlInputs() {
 }
 
 export default defineConfig({
+  base: '3journey',
   assetsInclude: ['**/*.hdr', '**/*.glb'],
   plugins: [
     react(),

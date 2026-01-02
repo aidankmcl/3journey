@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+
 import * as THREE from 'three';
 
 export type DiscoUniforms = {

@@ -15,7 +15,7 @@ function Scene() {
 
   const donutGroup = useRef<THREE.Group | null>(null);
 
-  useFrame((state, delta) => {
+  useFrame((_, delta) => {
     if (!donutGroup.current) return;
 
     for (const donut of donutGroup.current.children) {

@@ -12,7 +12,7 @@ function Scene() {
   const discoUniforms = useMemo(() => createDiscoUniforms([0, 1, 0]), []);
 
   // Example: animate light position (or set it statically)
-  useFrame(({ clock }) => {
+  useFrame(() => {
     // Uncomment to animate:
     // const t = clock.getElapsedTime();
     // discoUniforms.uLightPos.value.set(Math.sin(t) * 2, 0, Math.cos(t) * 2);

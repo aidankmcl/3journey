@@ -1,13 +1,10 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
-import GUI from 'lil-gui'
 // import { house } from './_generator'
 
 /**
  * Base
  */
-// Debug
-const gui = new GUI()
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
@@ -189,7 +186,6 @@ const tick = () =>
 {
     // Timer
     timer.update()
-    const elapsedTime = timer.getElapsed()
 
     // Update controls
     controls.update()

@@ -191,7 +191,7 @@
           const title = formatLabel(name);
           const card = document.createElement("a");
           card.className = "lesson-card";
-          card.href = `./${name}/`;
+          card.href = `/3journey/${name}/`;
           card.setAttribute("aria-label", `Open ${title}`);
 
           const thumbEntry = Object.entries(thumbnailFiles).find(([path]) =>

@@ -26,7 +26,7 @@ const scene = new THREE.Scene()
 
 // Loaders
 const dracoLoader = new DRACOLoader()
-dracoLoader.setDecoderPath('/draco/')
+dracoLoader.setDecoderPath('/3journey/draco/')
 const gltfLoader = new GLTFLoader()
 gltfLoader.setDRACOLoader(dracoLoader)
 
@@ -104,7 +104,6 @@ const initMaterial = new THREE.ShaderMaterial({
 });
 
 let startIndex = 0;
-let targetIndex = 1;
 
 const particles = {
   geometry: initGeometry as THREE.BufferGeometry,
@@ -113,8 +112,6 @@ const particles = {
   maxCount: 0,
   positions: [] as THREE.Float32BufferAttribute[]
 }
-
-// scene.add(particles.points);
 
 
 gltfLoader.load('./models.glb', (gltf) => {

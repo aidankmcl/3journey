@@ -1,7 +1,5 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
-import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js'
 import { HDRLoader } from 'three/addons/loaders/HDRLoader.js'
 import { mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js'
 import CustomShaderMaterial from 'three-custom-shader-material/vanilla';
@@ -14,7 +12,6 @@ import '~/styles/style.css';
 */
 // Debug
 const gui = new GUI({ width: 325 })
-const debugObject = {}
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl')

@@ -29,12 +29,12 @@ const scene = new THREE.Scene();
 
 // Textures
 import matcapURL from '~/textures/matcaps/1.png';
-import gradientURL from '~/textures/gradients/3.jpg';
+// import gradientURL from '~/textures/gradients/3.jpg';
 
 const textureLoader = new THREE.TextureLoader();
 const matcapTexture = textureLoader.load(matcapURL);
 matcapTexture.colorSpace = THREE.SRGBColorSpace;
-const gradientTexture = textureLoader.load(gradientURL);
+// const gradientTexture = textureLoader.load(gradientURL);
 
 
 // Materials
