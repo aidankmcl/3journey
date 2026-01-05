@@ -7,6 +7,6 @@ export const createUISlice: StateCreator<
   [],
   [],
   UISlice
-> = (set) => ({
+> = () => ({
   
 });

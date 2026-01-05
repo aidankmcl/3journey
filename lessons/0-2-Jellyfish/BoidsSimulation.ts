@@ -16,11 +16,9 @@ import {
   Loop,
   length,
   float,
-  int,
   mix,
   clamp,
   texture,
-  uv
 } from "three/tsl";
 
 

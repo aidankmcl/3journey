@@ -39,9 +39,9 @@ function Scene() {
   });
 
   const collisionEnter = () => {
-    // hitSound.currentTime = 0;
-    // hitSound.volume = Math.random();
-    // hitSound.play();
+    hitSound.currentTime = 0;
+    hitSound.volume = Math.random();
+    hitSound.play();
   }
   
   return <>

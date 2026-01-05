@@ -8,7 +8,7 @@ export const createAgentsSlice: StateCreator<
   [],
   [],
   AgentsSlice
-> = (set) => ({
+> = () => ({
   agents: {},
   addAgent: () => {}
 });

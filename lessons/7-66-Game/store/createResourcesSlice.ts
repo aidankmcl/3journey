@@ -7,6 +7,6 @@ export const createResourcesSlice: StateCreator<
   [],
   [],
   ResourcesSlice
-> = (set) => ({
+> = () => ({
   
 });
