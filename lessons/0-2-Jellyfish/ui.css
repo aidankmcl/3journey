@@ -1,0 +1,29 @@
+.ui {
+  position: absolute;
+  bottom: 45vh;
+  left: 45vw;
+  padding: 1rem;
+  transition: all 1s;
+}
+
+.ui.playing {
+  left: 0;
+  bottom: 0;
+}
+
+.control {
+  cursor: pointer;
+  color: mediumpurple;
+  background-color: white;
+  font-size: 2rem;
+  outline: none;
+  border: none;
+  padding: 0.8rem 1.6rem;
+  border-radius: 10px;
+  transition: all 1s;
+}
+
+.ui.playing .control {
+  color: white;
+  background-color: mediumpurple;
+}
