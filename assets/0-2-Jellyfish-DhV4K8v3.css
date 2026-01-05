@@ -1,0 +1,1 @@
+.ui{padding:1rem;transition:all 1s;position:absolute;bottom:45vh;left:45vw}.ui.playing{bottom:0;left:0}.control{cursor:pointer;color:#9370db;background-color:#fff;border:none;border-radius:10px;outline:none;padding:.8rem 1.6rem;font-size:2rem;transition:all 1s}.ui.playing .control{color:#fff;background-color:#9370db}
