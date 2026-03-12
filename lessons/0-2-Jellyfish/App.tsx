@@ -157,6 +157,7 @@ function Scene() {
         <meshStandardNodeMaterial
           colorNode={colorNode}
           positionNode={positionNode}
+          side={THREE.DoubleSide}
         />
       </instancedMesh>
     </Bvh>
