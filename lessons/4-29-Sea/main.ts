@@ -1,11 +1,9 @@
 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-// import GUI from 'lil-gui';
 
 import '~/styles/style.css';
 
-// const gui = new GUI();
 
 const sizes = {
   width: window.innerWidth,
@@ -24,7 +22,7 @@ if (!canvas) {
 const scene = new THREE.Scene();
 
 // Add test plane
-const geom = new THREE.PlaneGeometry(10, 10, 512, 512);
+const geom = new THREE.PlaneGeometry(5, 5, 512, 512);
 
 let elapsedTime = 0.0;
 

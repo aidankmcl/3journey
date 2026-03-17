@@ -2,6 +2,8 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { RectAreaLightHelper } from 'three/addons'
 
+import '~/styles/style.css';
+
 /**
  * Base
  */

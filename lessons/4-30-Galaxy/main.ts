@@ -4,6 +4,8 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import GUI from 'lil-gui'
 
+import '~/styles/style.css';
+
 import vertexShader from "./shaders/pattern.vert";
 import fragmentShader from "./shaders/pattern.frag";
 

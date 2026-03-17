@@ -50,11 +50,24 @@
         flex: 1;
       }
 
+      .lesson-section {
+        padding: 0 0 2rem;
+      }
+
+      .section-title {
+        margin: 0 0 1rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: #cbd5e1;
+      }
+
       .lesson-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
         gap: clamp(1rem, 2vw, 1.75rem);
-        padding: 0 0 2rem;
+        padding: 0;
       }
 
       .lesson-card {
@@ -79,6 +92,15 @@
         transform: translateY(-6px);
         border-color: rgba(148, 163, 184, 0.35);
         box-shadow: 0 28px 65px -38px rgba(14, 116, 144, 0.65);
+      }
+
+      .featured-card {
+        border-color: rgba(56, 189, 248, 0.42);
+        box-shadow: 0 28px 65px -38px rgba(14, 116, 144, 0.72);
+      }
+
+      .featured-card:hover {
+        border-color: rgba(56, 189, 248, 0.62);
       }
 
       .thumb {
@@ -145,20 +167,37 @@
   </head>
   <body>
     <header>
-      <h1>Three.js Lessons</h1>
+      <h1>Three.js Journey</h1>
       <p>Browse the available lessons and jump into the one you&rsquo;d like to explore.</p>
     </header>
     <main>
-      <section id="lesson-grid" class="lesson-grid" aria-live="polite"></section>
+      <section id="featured-section" class="lesson-section" hidden>
+        <h2 class="section-title">Featured</h2>
+        <div id="featured-grid" class="lesson-grid" aria-live="polite"></div>
+      </section>
+      <section id="all-lessons-section" class="lesson-section" hidden>
+        <h2 class="section-title">All Lessons</h2>
+        <div id="lesson-grid" class="lesson-grid" aria-live="polite"></div>
+      </section>
       <p class="empty-state" hidden>No lessons are available yet. Add a new folder to get started.</p>
     </main>
     <script type="module">
+      // Add lesson folder paths to pin them at the top of the page.
+      const FEATURED_LESSONS = {
+        "lessons/Tiniest-Violin": "",
+        "lessons/Jellyfish-Party": "",
+        "lessons/6-51-R3F-Custom-Blender-Scene": "",
+      };
+
       const lessonFiles = import.meta.glob("./lessons/*/index.html");
       const thumbnailFiles = import.meta.glob(
         "./lessons/*/thumbnail.{png,jpg,jpeg,jpe,gif,webp,avif,svg}",
         { eager: true, query: "?url", import: "default" }
       );
 
+      const featuredSection = document.getElementById("featured-section");
+      const allLessonsSection = document.getElementById("all-lessons-section");
+      const featuredGrid = document.getElementById("featured-grid");
       const grid = document.getElementById("lesson-grid");
       const emptyState = document.querySelector(".empty-state");
 
@@ -169,7 +208,9 @@
         if (/^\d+$/.test(unprefixed)) {
           return `Lesson ${unprefixed.padStart(2, "0")}`;
         }
-        return `${chapter}.${ep} / ${name.join(' ')}`;
+        return !isNaN(chapter) && !isNaN(ep)
+          ? `${chapter}.${ep} / ${name.join(' ')}`
+          : [chapter, ep, ...name].join(' ');
       };
 
       const lessonNames = [
@@ -181,16 +222,17 @@
           return na - nb;
         }
         return a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" });
-      });
+      }).reverse();
 
-      if (lessonNames.length === 0) {
-        emptyState.hidden = false;
-      } else {
-        emptyState.hidden = true;
-        lessonNames.forEach((name) => {
+      const featuredSet = new Set(Object.keys(FEATURED_LESSONS));
+      const featuredLessons = [...featuredSet].filter((name) => lessonNames.includes(name));
+      const regularLessons = lessonNames.filter((name) => !featuredSet.has(name));
+
+      const renderLessons = (names, container, isFeatured = false) => {
+        names.forEach((name) => {
           const title = formatLabel(name);
           const card = document.createElement("a");
-          card.className = "lesson-card";
+          card.className = `lesson-card${isFeatured ? " featured-card" : ""}`;
           card.href = `/3journey/${name}/`;
           card.setAttribute("aria-label", `Open ${title}`);
 
@@ -207,12 +249,24 @@
             </div>
             <div class="details">
               <h2>${title}</h2>
-              <p>Open ${title} in the lesson viewer.</p>
             </div>
           `;
 
-          grid.appendChild(card);
+          container.appendChild(card);
         });
+      };
+
+      if (lessonNames.length === 0) {
+        featuredSection.hidden = true;
+        allLessonsSection.hidden = true;
+        emptyState.hidden = false;
+      } else {
+        emptyState.hidden = true;
+        featuredSection.hidden = featuredLessons.length === 0;
+        allLessonsSection.hidden = regularLessons.length === 0;
+
+        renderLessons(featuredLessons, featuredGrid, true);
+        renderLessons(regularLessons, grid);
       }
     </script>
   </body>

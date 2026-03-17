@@ -1,18 +1,14 @@
 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-// import GUI from 'lil-gui';
 
 import '~/styles/style.css';
 
-// const gui = new GUI();
 
 const sizes = {
   width: window.innerWidth,
   height: window.innerHeight
 }
-
-// const cursor = { x: 0, y: 0 };
 
 
 const canvas = document.querySelector('canvas.webgl');

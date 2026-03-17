@@ -1,18 +1,14 @@
 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import GUI from 'lil-gui';
 
 import '~/styles/style.css';
 
-const gui = new GUI();
 
 const sizes = {
   width: window.innerWidth,
   height: window.innerHeight
 }
-
-// const cursor = { x: 0, y: 0 };
 
 
 const canvas = document.querySelector('canvas.webgl');
@@ -21,68 +17,59 @@ if (!canvas) {
 }
 
 
-const textureLoader = new THREE.TextureLoader();
-// import flagTextureURL from '~/textures/door/color.jpg';
-// import flagTextureURL from '~/textures/minecraft.png';
-import flagTextureURL from '~/textures/checkerboard-1024x1024.png';
-const flagTexture = textureLoader.load(flagTextureURL);
-
 const scene = new THREE.Scene();
 
 // Add test plane
 const geom = new THREE.PlaneGeometry(1, 1, 32, 32);
-const count = geom.attributes.position.count;
-const randoms = new Float32Array(count);
-for (let i=0; i<count; i++) {
-  randoms[i] = 0.5 - Math.random();
-}
-geom.setAttribute('aRandom', new THREE.BufferAttribute(randoms, 1));
 
-// Test 1
-// import vertexShader from './shaders/test.vert';
-// import fragShader from './shaders/test.frag';
-// const material = new THREE.RawShaderMaterial({
-//   vertexShader: vertexShader,
-//   fragmentShader: fragShader,
-//   transparent: true
-// });
+let elapsedTime = 0.0;
 
-// Test 2
-import vertexShader from './shaders/test2.vert';
-import fragShader from './shaders/test2.frag';
+// Pattern 2
+import vertexShader from './shaders/pattern.vert';
+import radarShader from './shaders/radar.frag';
 const material = new THREE.RawShaderMaterial({
   vertexShader: vertexShader,
-  fragmentShader: fragShader,
+  fragmentShader: radarShader,
+  side: THREE.DoubleSide,
   uniforms: {
-    uFrequency: { value: new THREE.Vector2(10, 5) },
-    uTime: { value: 0 },
-    uColor: { value: new THREE.Color('lightblue') },
-    uTexture: { value: flagTexture }
-  },
+    uElapsed: { value: elapsedTime }
+  }
 });
-gui.add(material.uniforms.uFrequency.value, 'x').min(0).max(20).step(0.01).name('Freq X');
-gui.add(material.uniforms.uFrequency.value, 'y').min(0).max(20).step(0.01).name('Freq Y');
 
 const plane = new THREE.Mesh(
   geom,
   material
 );
-plane.scale.y *= 2 / 3;
+plane.position.set(-0.8, 0.2, -0.2);
 scene.add(plane);
+
+import perlinShader from './shaders/perlin.frag';
+const plane2 = plane.clone();
+plane2.material = plane.material.clone();
+plane2.material.fragmentShader = perlinShader;
+plane2.position.set(0, 0, 0);
+scene.add(plane2);
+
+import starShader from './shaders/stars.frag';
+const plane3 = plane.clone();
+plane3.material = plane.material.clone();
+plane3.material.fragmentShader = starShader;
+plane3.position.set(0.8, -0.2, 0.2);
+scene.add(plane3);
 
 
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100);
-camera.position.set(0, 0, 1);
+camera.position.set(0, 0, 1.5);
 camera.lookAt(plane.position);
 scene.add(camera);
 
 
-const axesHelper = new THREE.AxesHelper(2);
-scene.add(axesHelper);
+// const axesHelper = new THREE.AxesHelper(2);
+// scene.add(axesHelper);
 
 
 const controls = new OrbitControls(camera, canvas as HTMLElement);
-controls.enableDamping = true;
+// controls.enableDamping = true;
 
 const renderer = new THREE.WebGLRenderer({
   canvas
@@ -96,9 +83,10 @@ renderer.render(scene, camera); // Initial render
 const clock = new THREE.Clock();
 
 const tick = () => {
-  const elapsedTime = clock.getElapsedTime();
-
-  material.uniforms.uTime.value = elapsedTime;
+  elapsedTime = clock.getElapsedTime();
+  plane.material.uniforms.uElapsed.value = elapsedTime;
+  plane2.material.uniforms.uElapsed.value = elapsedTime;
+  plane3.material.uniforms.uElapsed.value = elapsedTime;
 
   controls.update();
   

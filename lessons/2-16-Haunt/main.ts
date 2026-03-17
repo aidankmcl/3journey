@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
-// import { house } from './_generator'
+
+import '~/styles/style.css';
 
 /**
  * Base
