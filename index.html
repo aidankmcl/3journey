@@ -168,7 +168,6 @@
   <body>
     <header>
       <h1>Three.js Journey</h1>
-      <p>Browse the available lessons and jump into the one you&rsquo;d like to explore.</p>
     </header>
     <main>
       <section id="featured-section" class="lesson-section" hidden>
@@ -184,9 +183,9 @@
     <script type="module">
       // Add lesson folder paths to pin them at the top of the page.
       const FEATURED_LESSONS = {
-        "lessons/Tiniest-Violin": "",
-        "lessons/Jellyfish-Party": "",
-        "lessons/6-51-R3F-Custom-Blender-Scene": "",
+        "lessons/Tiniest-Violin": "Uses MediaPipe for hand tracking, which plays a lament on a tiny violin depending on the thumb and index finger.",
+        "lessons/Jellyfish-Party": "Implemented a 3D flocking simulation utilizing WebGPU via Three.js TSL for parallelized physics calculations and the Web Audio API to keep the party going.",
+        "lessons/6-51-R3F-Custom-Blender-Scene": "My first end-to-end scene from Blender to Three.js using baked textures and custom shaders.",
       };
 
       const lessonFiles = import.meta.glob("./lessons/*/index.html");
@@ -249,6 +248,7 @@
             </div>
             <div class="details">
               <h2>${title}</h2>
+              ${isFeatured ? `<p>${FEATURED_LESSONS[name]}</p>` : ''}
             </div>
           `;
 
