@@ -50,11 +50,24 @@
         flex: 1;
       }
 
+      .lesson-section {
+        padding: 0 0 2rem;
+      }
+
+      .section-title {
+        margin: 0 0 1rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: #cbd5e1;
+      }
+
       .lesson-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
         gap: clamp(1rem, 2vw, 1.75rem);
-        padding: 0 0 2rem;
+        padding: 0;
       }
 
       .lesson-card {
@@ -79,6 +92,15 @@
         transform: translateY(-6px);
         border-color: rgba(148, 163, 184, 0.35);
         box-shadow: 0 28px 65px -38px rgba(14, 116, 144, 0.65);
+      }
+
+      .featured-card {
+        border-color: rgba(56, 189, 248, 0.42);
+        box-shadow: 0 28px 65px -38px rgba(14, 116, 144, 0.72);
+      }
+
+      .featured-card:hover {
+        border-color: rgba(56, 189, 248, 0.62);
       }
 
       .thumb {
@@ -142,17 +164,23 @@
         text-align: center;
       }
     </style>
-    <script type="module" crossorigin src="/3journey/assets/index-OTqqsZH8.js"></script>
+    <script type="module" crossorigin src="/3journey/assets/index-zqVm4IcI.js"></script>
     <link rel="modulepreload" crossorigin href="/3journey/assets/modulepreload-polyfill-Dxig7UG6.js">
-    <link rel="modulepreload" crossorigin href="/3journey/assets/preload-helper-BM4zi_WA.js">
+    <link rel="modulepreload" crossorigin href="/3journey/assets/preload-helper-DnWtCG5g.js">
   </head>
   <body>
     <header>
-      <h1>Three.js Lessons</h1>
-      <p>Browse the available lessons and jump into the one you&rsquo;d like to explore.</p>
+      <h1>Three.js Journey</h1>
     </header>
     <main>
-      <section id="lesson-grid" class="lesson-grid" aria-live="polite"></section>
+      <section id="featured-section" class="lesson-section" hidden>
+        <h2 class="section-title">Featured</h2>
+        <div id="featured-grid" class="lesson-grid" aria-live="polite"></div>
+      </section>
+      <section id="all-lessons-section" class="lesson-section" hidden>
+        <h2 class="section-title">All Lessons</h2>
+        <div id="lesson-grid" class="lesson-grid" aria-live="polite"></div>
+      </section>
       <p class="empty-state" hidden>No lessons are available yet. Add a new folder to get started.</p>
     </main>
   </body>

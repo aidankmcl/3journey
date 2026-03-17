@@ -1,1 +1,0 @@
-var e=`/3journey/assets/color-kaj-FADn.jpg`;export{e as t};
